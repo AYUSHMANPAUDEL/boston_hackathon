@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Camera - Real-time Object Detection</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000;
+        }
+        video {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            border: 2px solid #fff;
+        }
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Video element to show the webcam feed -->
+    <video id="video" width="640" height="480" autoplay></video>
+
+    <!-- Canvas to draw bounding boxes and labels -->
+    <canvas id="outputCanvas"></canvas>
+
+    <script>
+        // Access the webcam
+        const video = document.getElementById('video');
+        const outputCanvas = document.getElementById('outputCanvas');
+        const outputContext = outputCanvas.getContext('2d');
+
+        // Get access to the user's webcam
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(err => {
+                console.error('Error accessing webcam:', err);
+            });
+
+        // Function to send frames to the backend for processing
+        setInterval(() => {
+            outputCanvas.width = video.videoWidth;
+            outputCanvas.height = video.videoHeight;
+            outputContext.clearRect(0, 0, outputCanvas.width, outputCanvas.height);
+            outputContext.drawImage(video, 0, 0, outputCanvas.width, outputCanvas.height);
+
+            // Capture the current frame as a blob
+            outputCanvas.toBlob((blob) => {
+                const formData = new FormData();
+                formData.append("frame", blob);
+
+                // Send the frame to the backend
+                fetch("/process_video/", {
+                    method: "POST",
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const detections = data.detections;  // Bounding box and label info
+
+                    // Process each detection and draw bounding boxes and labels
+                    detections.forEach(detection => {
+                        const { label, confidence, x, y, width, height } = detection;
+
+                        // Improved bounding box styling
+                        outputContext.strokeStyle = "yellow";  // Changed to yellow for better visibility
+                        outputContext.lineWidth = 4;  // Increased width for better visibility
+                        outputContext.strokeRect(x, y, width, height);
+
+                        // Improved text styling with background
+                        outputContext.fillStyle = "rgba(0, 0, 0, 0.6)";  // Semi-transparent black background for text
+                        outputContext.fillRect(x, y - 24, width, 24);  // Draw background for text
+
+                        outputContext.fillStyle = "yellow";  // Text color changed to yellow
+                        outputContext.font = "16px Arial";
+                        outputContext.fillText(`${label} ${confidence.toFixed(2)}`, x + 5, y - 5); // Added padding for text
+                    });
+
+                    // Display the processed image returned by the backend
+                    const img = new Image();
+                    img.src = 'data:image/jpeg;base64,' + data.image;
+                    img.onload = () => {
+                        outputContext.drawImage(img, 0, 0, outputCanvas.width, outputCanvas.height);
+                    };
+                })
+                .catch(err => {
+                    console.error("Error processing video:", err);
+                });
+            }, "image/jpeg", 0.8);
+        }, 200);
+    </script>
+</body>
+</html>

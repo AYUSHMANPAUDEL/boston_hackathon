@@ -181,6 +181,35 @@
         </div>
     </div>
 
-
+    <script>
+        const socket = new WebSocket('ws://' + window.location.host + '/ws/live_alerts/');
+    
+        socket.onopen = function() {
+            console.log('WebSocket connected');
+        };
+    
+        socket.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+    
+            // Create and display the image
+            const image = document.createElement('img');
+            image.src = 'data:image/jpeg;base64,' + data.image;
+            document.body.appendChild(image);
+    
+            // Display the detections
+            const detections = data.detections.map(det => `<p>${det.label}</p>`).join('');
+            document.body.innerHTML += detections;
+        };
+    
+        socket.onclose = function() {
+            console.error('WebSocket closed unexpectedly');
+        };
+    
+        socket.onerror = function(error) {
+            console.error('WebSocket error:', error);
+        };
+    </script>
+    
+    
 </body>
 </html>

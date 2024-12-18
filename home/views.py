@@ -16,7 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 # Load the YOLO model
 model = YOLO("home/traffic.pt")  # Replace with your .pt model path
-accident_model = YOLO("home/accident.pt")
+accident_model = YOLO("home/best.pt")
 @csrf_exempt
 def process_video(request):
     """
@@ -88,9 +88,6 @@ def process_video_accident(request):
         # Perform inference
         results = accident_model.predict(source=img)
 
-        # Class names as defined in data.yaml
-        class_names = ['accident', 'car', 'fire']
-
         # Prepare a list to store the detections
         detections = []
 
@@ -99,9 +96,9 @@ def process_video_accident(request):
             x1, y1, x2, y2 = map(int, box.xyxy[0].cpu().numpy())
             conf = box.conf[0].item()
             cls = int(box.cls[0].item())
-
-            # Map the class index to the class name
-            label = f"{class_names[cls]} ({conf:.2f})"  # Display class name and confidence
+            if cls == 0 :
+              cls = "Accident"
+            label = f"Class {cls} ({conf:.2f})"
 
             # Store detection details
             detections.append({
@@ -130,9 +127,6 @@ def process_video_accident(request):
         return JsonResponse(response, safe=False)
 
     return JsonResponse({'error': 'Invalid request'}, status=400)
-
-
-
 
 
 

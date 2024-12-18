@@ -1,7 +1,6 @@
 from django.urls import path
-from . import consumers
+from .consumers import AccidentAlertConsumer
 
-
-websocket_urlpatterns =[
-  path('ws/live_alerts/', consumers.AlertConsumer.as_asgi()),
+websocket_urlpatterns = [
+    path('ws/alerts/', AccidentAlertConsumer.as_asgi()),
 ]

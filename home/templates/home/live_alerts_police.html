@@ -180,35 +180,35 @@
             </div>
         </div>
     </div>
-
     <script>
-        const socket = new WebSocket('ws://' + window.location.host + '/ws/live_alerts/');
+        const socket = new WebSocket('ws://' + window.location.host + '/ws/alerts/');
     
-        socket.onopen = function() {
-            console.log('WebSocket connected');
+        socket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            const alertsContainer = document.getElementById("alerts");
+    
+            // Create an alert div
+            const alertDiv = document.createElement("div");
+            alertDiv.textContent = data.alert;
+            alertsContainer.appendChild(alertDiv);
+    
+            // Display the image
+            if (data.image) {
+                const img = document.createElement("img");
+                img.src = `data:image/jpeg;base64,${data.image}`;
+                img.alt = "Accident Alert Image";
+                img.style.maxWidth = "100%";
+                img.style.marginTop = "10px";
+                alertsContainer.appendChild(img);
+            }
         };
     
-        socket.onmessage = function(event) {
-            const data = JSON.parse(event.data);
-    
-            // Create and display the image
-            const image = document.createElement('img');
-            image.src = 'data:image/jpeg;base64,' + data.image;
-            document.body.appendChild(image);
-    
-            // Display the detections
-            const detections = data.detections.map(det => `<p>${det.label}</p>`).join('');
-            document.body.innerHTML += detections;
-        };
-    
-        socket.onclose = function() {
+        socket.onclose = function(e) {
             console.error('WebSocket closed unexpectedly');
         };
-    
-        socket.onerror = function(error) {
-            console.error('WebSocket error:', error);
-        };
     </script>
+    
+    <div id="alerts"></div>
     
     
 </body>

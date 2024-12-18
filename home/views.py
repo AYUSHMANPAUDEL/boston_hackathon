@@ -143,3 +143,47 @@ def traffic_cam(request):
 
 def accident_page(request):
     return render(request,"home/accident_cam.html")
+
+def main_page(request):
+    return render(request,"home/main.html")
+
+
+def police_page(request):
+    return render(request,"home/p_dash.html")
+
+def firedepart_page(request):
+    return render(request,"home/f_dash.html")
+
+def ambulance_page(request):
+    return render(request,"home/a_dash.html")
+
+def dashboard_main(request):
+    return render(request, 'home/dashboard_main.html')  # Make sure the HTML files are in the correct templates directory
+
+def projects(request):
+    return render(request, 'home/projects.html')
+
+def analytics(request):
+    return render(request, 'home/analytics.html')
+
+
+def police_stations_police(request):
+    return render(request, 'home/police_stations_police.html')
+
+def officers_police(request):
+    return render(request, 'home/officers_police.html')
+
+def reports_police(request):
+    return render(request, 'home/reports_police.html')
+
+def live_alerts_police(request):
+    return render(request, 'home/live_alerts_police.html')
+
+def live_alerts_ambulance(request):
+
+    
+    return render(request, 'home/live_alerts_ambulance.html',)
+def live_alerts_firedep(request):
+
+    
+    return render(request, 'home/live_alerts_firedep.html', )

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects - Urban Infrastructure</title>
+    <link rel="stylesheet" href="index.html"> <!-- Link to the base CSS -->
+</head>
+<style>
+    /* General Reset */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
+
+    body {
+        background-color: #f4f8ff;
+        color: #333;
+    }
+
+    /* Container */
+    .container {
+        display: flex;
+        height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+        width: 250px;
+        background-color: #003366;
+        color: #fff;
+        padding: 20px;
+        position: fixed;
+        height: 100%;
+    }
+
+    .sidebar .logo {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 40px;
+    }
+
+    .sidebar ul {
+        list-style-type: none;
+    }
+
+    .sidebar ul li {
+        margin: 20px 0;
+    }
+
+    .sidebar ul li a {
+        text-decoration: none;
+        color: #fff;
+        font-size: 18px;
+        transition: all 0.3s ease;
+    }
+
+    .sidebar ul li a:hover {
+        color: #00bcd4;
+    }
+
+    /* Main Content */
+    .main-content {
+        margin-left: 250px;
+        padding: 20px;
+        flex: 1;
+        background-color: #f4f8ff;
+    }
+
+    .navbar {
+        background-color: #00bcd4;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: white;
+        font-size: 20px;
+    }
+
+    .navbar .title {
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    /* Dashboard Section */
+    .dashboard-section {
+        display: flex;
+        gap: 20px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+    }
+
+    .dashboard-card {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        flex: 1;
+        padding: 20px;
+        text-align: center;
+        transition: transform 0.3s;
+    }
+
+    .dashboard-card:hover {
+        transform: scale(1.05);
+    }
+
+    .dashboard-card .title {
+        font-size: 18px;
+        color: #003366;
+        margin-bottom: 10px;
+    }
+
+    .dashboard-card .value {
+        font-size: 24px;
+        color: #00bcd4;
+        font-weight: bold;
+    }
+
+    /* Table Section */
+    .table-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .table-container .table {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        width: 48%;
+        padding: 20px;
+    }
+
+    .table-container table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .table-container table th, .table-container table td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .table-container table th {
+        background-color: #003366;
+        color: white;
+    }
+
+    .table-container table tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    /* Hide Sections */
+    .hide {
+        display: none;
+    }
+
+    .read-more {
+        color: #00bcd4;
+        text-decoration: none;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    .read-more:hover {
+        text-decoration: underline;
+    }
+
+</style>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">Smart Build</div>
+            <ul>
+                <li><a href="/">Dashboard</a></li>
+                <li><a href="{% url 'projects' %}">Projects</a></li>
+                <li><a href="{% url 'analytics' %}">Analytics</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Navbar -->
+            <div class="navbar">
+                <div class="title">Urban Infrastructure Dashboard</div>
+                <div>Welcome, User</div>
+            </div>
+
+            <!-- Projects Content -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Project Name</th>
+                            <th>Status</th>
+                            <th>Completion Date</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Building A</td>
+                            <td>Completed</td>
+                            <td>Nov 2024</td>
+                            <td>Details about Building A...</td>
+                        </tr>
+                        <tr>
+                            <td>Building B</td>
+                            <td>In Progress</td>
+                            <td>Mar 2025</td>
+                            <td>Details about Building B...</td>
+                        </tr>
+                        <tr>
+                            <td>Building C</td>
+                            <td>In Progress</td>
+                            <td>Dec 2024</td>
+                            <td>Details about Building C...</td>
+                        </tr>
+                        <tr>
+                            <td>Building D</td>
+                            <td>Completed</td>
+                            <td>Oct 2024</td>
+                            <td>Details about Building D...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -207,5 +207,34 @@
         </div>
     </div>
 
+    <script>
+        const socket = new WebSocket('ws://' + window.location.host + '/ws/alerts/');
+    
+        socket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            const alertsContainer = document.getElementById("alerts");
+    
+            // Create an alert div
+            const alertDiv = document.createElement("div");
+            alertDiv.textContent = data.alert;
+            alertsContainer.appendChild(alertDiv);
+    
+            // Display the image
+            if (data.image) {
+                const img = document.createElement("img");
+                img.src = `data:image/jpeg;base64,${data.image}`;
+                img.alt = "Accident Alert Image";
+                img.style.maxWidth = "100%";
+                img.style.marginTop = "10px";
+                alertsContainer.appendChild(img);
+            }
+        };
+    
+        socket.onclose = function(e) {
+            console.error('WebSocket closed unexpectedly');
+        };
+    </script>
+    <div id="alerts"></div>
+
 </body>
 </html>

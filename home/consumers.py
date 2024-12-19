@@ -1,25 +1,14 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 
-class AlertConsumer(AsyncWebsocketConsumer):
+class AccidentAlertConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        self.group_name = 'live_alerts'
-
-        # Join the group
-        await self.channel_layer.group_add(
-            self.group_name,
-            self.channel_name
-        )
+        await self.channel_layer.group_add("alerts", self.channel_name)
         await self.accept()
 
     async def disconnect(self, close_code):
-        # Leave the group
-        await self.channel_layer.group_discard(
-            self.group_name,
-            self.channel_name
-        )
+        await self.channel_layer.group_discard("alerts", self.channel_name)
 
-    # Receive message from group
     async def send_alert(self, event):
-        alert = event['alert']
-        await self.send(text_data=json.dumps(alert))
+        # Send text and base64 image data to WebSocket
+        await self.send(text_data=json.dumps(event['message']))

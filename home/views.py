@@ -154,7 +154,7 @@ def ambulance_page(request):
     return render(request,"home/a_dash.html")
 
 def dashboard_main(request):
-    return render(request, 'home/dashboard_main.html')  # Make sure the HTML files are in the correct templates directory
+    return render(request, 'home/dashboard_main.html')  
 
 def projects(request):
     return render(request, 'home/projects.html')

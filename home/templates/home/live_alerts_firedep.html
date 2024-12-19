@@ -14,8 +14,8 @@
         }
 
         body {
-            background-color: #2c2c2c;
-            color: #fff;
+            background-color: #2c2c2c; /* Dark gray background */
+            color: #fff; /* White text */
         }
 
         /* Container */
@@ -93,28 +93,90 @@
             margin-top: 50px;
         }
 
-        .live-alerts-section h1 {
-            font-size: 36px;
-            color: #ff4500; /* Fire Red */
-            animation: fadeIn 1s ease;
-        }
-
-        /* Animation for the Live Alerts Title */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
         /* Live Alerts List */
-        .live-alerts-list {
+        #alerts {
             margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .alert-card {
+            background-color: #444;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            color: white;
+        }
+
+        .alert-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .alert-card h4 {
+            margin-bottom: 5px;
             font-size: 18px;
+            color: #ff4500; /* Fire Red for alert titles */
+        }
+
+        .alert-card p {
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        /* Modal for Enlarged Image */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: #8f0f0f; /* Dark Red for modal */
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            max-width: 80%;
+            position: relative;
+        }
+
+        .modal-content img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .modal-content h4 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #f44336; /* Bright Red */
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 20px;
+            line-height: 30px;
+            text-align: center;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -135,44 +197,82 @@
 
         <!-- Main Content -->
         <div class="main-content">
-            <!-- Navbar -->
             <div class="navbar">
                 <div class="title">Live Alerts - Fire Department</div>
                 <div class="user-info">Welcome, Admin</div>
             </div>
 
             <!-- Live Alerts Section -->
-           
+            <div class="live-alerts-section">
+                <!-- Alerts will be injected here -->
+                <div id="alerts" class="live-alerts-list"></div>
+            </div>
         </div>
     </div>
 
     <script>
-        const socket = new WebSocket('ws://' + window.location.host + '/ws/alerts/');
-    
+        const socket = new WebSocket('ws://' + window.location.host + '/ws/alerts/'); // WebSocket connection
+        const alertsContainer = document.getElementById('alerts'); // Correctly reference the container
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        const modalContent = document.createElement('div');
+        modalContent.className = 'modal-content';
+        const closeModal = document.createElement('button');
+        closeModal.className = 'close-modal';
+        closeModal.innerHTML = '&times;';
+        const modalImage = document.createElement('img');
+        const modalLocation = document.createElement('h4');
+        modalContent.appendChild(closeModal);
+        modalContent.appendChild(modalImage);
+        modalContent.appendChild(modalLocation);
+        modal.appendChild(modalContent);
+        document.body.appendChild(modal);
+
         socket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            const alertsContainer = document.getElementById("alerts");
-    
-            // Create an alert div
-            const alertDiv = document.createElement("div");
-            alertDiv.textContent = data.alert;
-            alertsContainer.appendChild(alertDiv);
-    
-            // Display the image
-            if (data.image) {
-                const img = document.createElement("img");
-                img.src = `data:image/jpeg;base64,${data.image}`;
-                img.alt = "Accident Alert Image";
-                img.style.maxWidth = "100%";
-                img.style.marginTop = "10px";
-                alertsContainer.appendChild(img);
+            const location = data.location || "Unknown Location";
+            const imageSrc = data.image ? `data:image/jpeg;base64,${data.image}` : "";
+
+            // Create a new alert card
+            const alertCard = document.createElement('div');
+            alertCard.className = 'alert-card';
+
+            const alertImage = document.createElement('img');
+            alertImage.src = imageSrc;
+
+            const alertTitle = document.createElement('h4');
+            alertTitle.textContent = 'Fire Alert';
+
+            const alertLocation = document.createElement('p');
+            alertLocation.textContent = `Location: ${location}`;
+
+            alertCard.appendChild(alertImage);
+            alertCard.appendChild(alertTitle);
+            alertCard.appendChild(alertLocation);
+
+            // Click event to open modal
+            alertCard.addEventListener('click', () => {
+                modal.style.display = 'flex';
+                modalImage.src = imageSrc;
+                modalLocation.textContent = `Location: ${location}`;
+            });
+
+            alertsContainer.appendChild(alertCard);
+        };
+
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
             }
         };
-    
+
         socket.onclose = function(e) {
             console.error('WebSocket closed unexpectedly');
         };
     </script>
-    <div id="alerts"></div>
 </body>
 </html>

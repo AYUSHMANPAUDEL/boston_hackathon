@@ -211,33 +211,46 @@
             const data = JSON.parse(e.data);
             const location = data.location || "Bharatpur Camera A";
             const imageSrc = data.image ? `data:image/jpeg;base64,${data.image}` : "";
-
+        
+            // Get the current time as a fixed timestamp
+            const currentTime = new Date();
+            const formattedTime = currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        
             // Create a new alert card
             const thumbnailCard = document.createElement('div');
             thumbnailCard.className = 'thumbnail-card';
-
+        
             const alertImage = document.createElement('img');
             alertImage.src = imageSrc;
-
+        
             const alertTitle = document.createElement('h4');
             alertTitle.textContent = 'Accident Alert';
-
+        
             const alertLocation = document.createElement('p');
             alertLocation.textContent = `Location: ${location}`;
-
+        
+            const alertTimestamp = document.createElement('p');
+            alertTimestamp.textContent = `Time: ${formattedTime}`;
+            alertTimestamp.style.fontSize = "12px"; // Styling for timestamp
+            alertTimestamp.style.color = "#ffffff"; // Match card text color
+            alertTimestamp.style.marginTop = "5px"; // Add some spacing
+        
+            // Append elements to the card
             thumbnailCard.appendChild(alertImage);
             thumbnailCard.appendChild(alertTitle);
             thumbnailCard.appendChild(alertLocation);
-
+            thumbnailCard.appendChild(alertTimestamp);
+        
             // Click event to open modal
             thumbnailCard.addEventListener('click', () => {
                 modal.style.display = 'flex';
                 modalImage.src = imageSrc;
                 modalLocation.textContent = `Location: ${location}`;
             });
-
+        
             alertsContainer.appendChild(thumbnailCard);
         };
+        
 
         closeModal.addEventListener('click', () => {
             modal.style.display = 'none';
